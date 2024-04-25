@@ -19,6 +19,7 @@ class Compra{
     void Show();
     void Search();
     void Modify();
+    void Delete();
 }Cmpr;
 
 void Compra::Add(){
@@ -119,6 +120,93 @@ void Compra::Modify(){
     }
     std::cout << std::endl;
 }
+// void Compra::Delete(){
+//     char srchfolio[5];
+    
+//     char confirm;
+
+//     std::ifstream myFile("compraSimple.txt", std::ios::in| std::ios::out);
+//     std::fstream TempFile("tempCompraSimple.txt", std::ios::out);
+//     if (!myFile.good()) {
+//         std::cout << "\n Archivo no encontrado." << std::endl;
+//     } else {
+//         bool found = false;
+//         std::cout << "\tEliminacion de Ordenes" << std::endl;
+//         std::cout << "Folio a eliminar (xxxx): ";
+//         std::cin.ignore();
+//         std::cin.getline(srchfolio, 5);
+//         while (!myFile.eof()) {
+//             myFile.read((char*)&Cmpr, sizeof(Cmpr));
+//             if (myFile.eof()) break;
+//             if (strcmp(folio_compra, srchfolio) == 0) {
+//                 std::cout << "Orden de compra encontrada:" << std::endl;
+//                 std::cout << "No. Orden de Compra: " << folio_compra << std::endl;
+//                 std::cout << "Fecha: " << fecha_compra << std::endl;
+//                 std::cout << "ID de Proveedor: " << id_proveedor << std::endl;
+//                 std::cout << "Desea eleminar el registro? S/N: ";
+//                 std::cin >> confirm;
+//                 if(confirm=='S'|| confirm=='s'){
+//                     found = true;
+//                     std::cout<<"Aceptado, eliminando..."<<std::endl;
+//                 }
+//                 else TempFile.write((char*)&Cmpr, sizeof(Cmpr));
+//             }
+//         }
+//         myFile.close();
+//         TempFile.close();
+//         if (!found) std::cout << "Orden no encontrada." << std::endl;
+//         std::remove("compraSimple.txt");
+//         std::rename("tempCompraSimple.txt", "compraSimple.txt");
+//     }
+// }
+void Compra::Delete() {
+    char srchfolio[5];
+    std::fstream myFile("compraSimple.txt", std::ios::in | std::ios::out);
+    if (!myFile.good()) {
+        std::cout << "\n Archivo no encontrado." << std::endl;
+    } else {
+        std::cout << "\tEliminacion de Ordenes" << std::endl;
+        std::cout << "Folio a buscar (xxxx): ";
+        std::cin.ignore();
+        std::cin.getline(srchfolio, 5);
+
+        bool found = false;
+        std::fstream tempFile("tempCompraSimple.txt", std::ios::out); // Declare tempFile
+
+        while (!myFile.eof()) {
+            myFile.read((char*)&Cmpr, sizeof(Cmpr));
+            if (myFile.eof()) break;
+
+            if (strcmp(folio_compra, srchfolio) == 0) {
+                std::cout << "Orden de compra encontrada y eliminada:" << std::endl;
+                std::cout << "No. Orden de Compra: " << folio_compra << std::endl;
+                std::cout << "Fecha: " << fecha_compra << std::endl;
+                std::cout << "ID de Proveedor: " << id_proveedor << std::endl;
+                char confirm;
+                std::cout << "¿Desea eliminar esta orden? (y/n): ";
+                std::cin >> confirm;
+                if (confirm == 'y' || confirm == 'Y') {
+                    found = true;
+                    continue; // Skip writing this record to temp file
+                }
+            } else {
+                tempFile.write((char*)&Cmpr, sizeof(Cmpr));
+            }
+        }
+
+        if (!found) {
+            std::cout << "Orden no encontrada." << std::endl;
+        }
+
+        myFile.close();
+        tempFile.close();
+
+        // Replace the original file with the modified content
+        std::remove("compraSimple.txt");
+        std::rename("tempCompraSimple.txt", "compraSimple.txt");
+    }
+    std::cout << std::endl;
+}
 
 int main(){
     int sel;
@@ -145,6 +233,10 @@ int main(){
     case 3:
         clear_screen();
         Cmpr.Modify();
+        break;
+    case 4:
+        clear_screen();
+        Cmpr.Delete();
         break;
     case 5:
         clear_screen();
