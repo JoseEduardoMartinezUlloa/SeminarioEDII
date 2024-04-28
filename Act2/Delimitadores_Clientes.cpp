@@ -1,88 +1,75 @@
+//Delimitadores (Tabla Clientes)
+//Jose Eduardo Martinez Ulloa
+//Seminario de Solucion de Problemas de Estructuras de Datos II
+
 #include <iostream>
-#include <fstream> // TIENE FUNCIONES DE LECTURA Y ESCRITURA DENTRO DEL ARCHIVO
+#include <fstream> 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-/* cin>> // lectura de numeros
-   cin.getline(cadena, longitud) // para leer tipos de datos char
-   getline(cin, cadena) // para leer tipos de datos string
-*/
+void clear_screen(){std::cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"<<std::endl;}
 
-using namespace std;
-
-class Clientes
-{
-public:
-    char id_cli[10], nombre_cli[25], apellido_pat_cli[20], apellido_mat_cli[20], fecha_nac_cli[11], num_tel_cli[11], mail_cli[50];
-    void Capturar(); //METODOS
-    void Mostrar();
-    void Buscar();
-    void Eliminar();
-    void Modificar();
-}p;
-
-
-/////METODO CAPTURAR
-void Clientes::Capturar() // DE LA CLASE ALUMNO PERTENECE CAPTURAR ESO SIGNIFICAN LOS DOS PUNTOS
-{
-    cout<<"Ingrese el codigo del cliente: ";
-    cin.getline(id_cli, 10);
-    cin.getline(id_cli, 10); //EN LUGAR DE FFLUSH X QUE NO SIRVE CON GETLINE PARA LEER CADENAS
-    cout<<"Ingrese el nombre (sin apellidos) del cliente: ";
-    cin.getline(nombre_cli,25);
-    cout<<"Ingrese el apellido paterno del cliente: ";
-    cin.getline(apellido_pat_cli,20);
-    cout<<"Ingrese el apellido materno del cliente: ";
-    cin.getline(apellido_mat_cli,20);
-    cout<<"Ingrese la fecha de nacimiento del cliente (DD/MM/AAAA): ";
-    cin.getline(fecha_nac_cli,11);
-    cout<<"Ingrese el numero de telefono del cliente (10 digitos): ";
-    cin.getline(num_tel_cli,11);
-    cout<<"Ingrese el correo electronico del cliente: ";
-    cin.getline(mail_cli,50);
-    ofstream Archivo("InfoClientes.txt",ios::app); // ofstream crea un objeto para escritura en el archivo llamado "Archivo", ios::app = entrada y salida de datos
-    Archivo<<id_cli<<'|'<<nombre_cli<<'|'<<apellido_pat_cli<<'|'<<apellido_mat_cli<<'|'<<fecha_nac_cli<<'|'<<num_tel_cli<<'|'<<mail_cli<<'|'; //escribiendo en el archivo creado campo por campo separado por el delimitador '|'
-    Archivo.close(); // cerrar el archivo
+inline void Pause(){
+    std::string dummy;
+    std::cout << "Presione Entrar para continuar..." << std::endl;
+    getline(std::cin, dummy);
 }
 
-//////METODO MOSTRAR
-void Clientes::Mostrar()
+class Cli
 {
-    int i;
-    ifstream Lectura("InfoClientes.txt"); // abrir archivo en formato de lectura, "Lectura" que es un objeto
-    if(!Lectura.good()) // good ( libreria fstream) nos verifica si hubo problema al abrir el archivo a traves de true o false
-    {
-        cout<<"No existe el archivo.\n";
-        system("pause");
-    }
-    else
-    {
-        while(!Lectura.eof()) // eof = end of file
-        {
-            //Lectura de la variable id_cli
-            i=0;
-            do
-            {
-                Lectura.read((char *)&id_cli[i],1); //leo el objeto de tipo char, lo asigno a la variable user en la posicion que tenga el subindice, y se lee de caracter en carácter
-                if(Lectura.eof())
-                    break;
-                i++;
-            }while(id_cli[i-1]!='|'); // mientras user en la posicion del subindice menos 1 sea diferente al delimitador, sigues escribiendo en el arreglo "user"
-            id_cli[i-1]='\0'; // si no se cumple el while anterior, entonces escribe en la posicion del delimitador '\0' que significa final de la cadena para saber que se termino ese campo "user"
-            
-            //Lectura de la variable nombre_cli
-            i=0;
-            do
-            {
-                Lectura.read((char *)&nombre_cli[i],1);
-                if(Lectura.eof())
-                    break;
-                i++;
-            }while(nombre_cli[i-1]!='|');
-            nombre_cli[i-1]='\0';
+public:
+    char id_cli[10], firstn_cli[25], lastn_p_cli[20], lastn_m_cli[20], bday_cli[11], phonenum_cli[11], mail_cli[50];
+    void Add();
+    void Show();
+    void Search();
+    void Delete();
+    void Mod();
+};
 
-            //Lectura de la variable apellido_pat_cli
+void Cli::Add()
+{
+    std::cout<<"Codigo del cliente: ";
+    std::cin.ignore();
+    std::cin.getline(id_cli, 10);
+    std::cout<<"Ingrese el nombre (sin apellidos) del cliente: ";
+    std::cin.getline(firstn_cli,25);
+    std::cout<<"Ingrese el apellido paterno del cliente: ";
+    std::cin.getline(lastn_p_cli,20);
+    std::cout<<"Ingrese el apellido materno del cliente: ";
+    std::cin.getline(lastn_m_cli,20);
+    std::cout<<"Ingrese la fecha de nacimiento del cliente (DD/MM/AAAA): ";
+    std::cin.getline(bday_cli,11);
+    std::cout<<"Ingrese el numero de telefono del cliente (10 digitos): ";
+    std::cin.getline(phonenum_cli,11);
+    std::cout<<"Ingrese el correo electronico del cliente: ";
+    std::cin.getline(mail_cli,50);
+    std::ofstream wFile("InfoClientes.txt",std::ios::app);
+    wFile<<id_cli<<'|'<<firstn_cli<<'|'<<lastn_p_cli<<'|'<<lastn_m_cli<<'|'<<bday_cli<<'|'<<phonenum_cli<<'|'<<mail_cli<<'|';
+    wFile.close();
+}
+
+void Cli::Show(){
+    std::ifstream wFile("InfoClientes.txt");
+    if(!wFile.good()){ std::cout<<"Archivo no encontrado.\n"; Pause(); }
+    else{
+        while(!wFile.eof()){
+            int i=0;
+            do{
+                wFile.read((char *)&id_cli[i],1);
+                if(wFile.eof()) break;
+                i++;
+            } while(id_cli[i-1]!='|');
+            id_cli[i-1]='\0';
+            i=0;
+            do
+            {
+                wFile.read((char *)&firstn_cli[i],1);
+                if(wFile.eof())
+                    break;
+                i++;
+            }while(firstn_cli[i-1]!='|');
+            firstn_cli[i-1]='\0';
             i=0;
             do
             {
@@ -92,8 +79,6 @@ void Clientes::Mostrar()
                 i++;
             }while(apellido_pat_cli[i-1]!='|');
             apellido_pat_cli[i-1]='\0';
-
-            //Lectura de la variable apellido_mat_cli
             i=0;
             do
             {
@@ -107,7 +92,6 @@ void Clientes::Mostrar()
             if(Lectura.eof())
                 break;
 
-            //Lectura de la variable fecha_nac_cli
             i=0;
             do
             {
@@ -117,8 +101,6 @@ void Clientes::Mostrar()
                 i++;
             }while(fecha_nac_cli[i-1]!='|');
             fecha_nac_cli[i-1]='\0';
-
-            //Lectura de la variable num_tel_cli
             i=0;
             do
             {
@@ -128,8 +110,6 @@ void Clientes::Mostrar()
                 i++;
             }while(num_tel_cli[i-1]!='|');
             num_tel_cli[i-1]='\0';
-
-            //Lectura de la variable mail_cli
             i=0;
             do
             {
@@ -139,18 +119,15 @@ void Clientes::Mostrar()
                 i++;
             }while(mail_cli[i-1]!='|');
             mail_cli[i-1]='\0';
-
             if(Lectura.eof())
                 break;
-
-            //Imprimes valores
             cout<<endl<<"\nCodigo del Cliente: "<<id_cli<<endl<<"\nNombre Completo: "<<nombre_cli<<" "<<apellido_pat_cli<<" "<<apellido_mat_cli<<"\nFecha de Nacimiento:"<<fecha_nac_cli<<"\nNumero de Telefono: "<<num_tel_cli<<"\nCorreo Electronico: "<<mail_cli<<"\n"; // endl=salto de linea
             if(Lectura.eof())
                 break;
         }
         system("pause");
     }
-    Lectura.close(); // cierras el archivo a traves del objeto "Lectura"
+    Lectura.close();
 }
 /* PARA BUSCAR POR CUALQUIER ATRIBUTO O VARIABLE SE TIENE QUE RECORRER TODOS LOS CAMPOS DEL REGISTRO CARACTER POR CARACTER */
 void Clientes::Buscar(){
