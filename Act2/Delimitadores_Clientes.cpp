@@ -216,13 +216,48 @@ void Cli::Mod(){
             std::cin>>sel;
             switch(sel){
                 case 1:
-                    std::cout<<"Seleccionaste Modificar codigo"<<std::endl;
+                    std::cout<<"Nuevo Codigo: ";
+                    std::cin.getline(srch_id, 10);
                     break;
-
+                case 2:
+                    std::cout<<"Nuevo Nombre: ";
+                    std::cin.getline(firstn_cli, 25);
+                    break;
+                case 3:
+                    std::cout<<"Nuevo Apellido Paterno: ";
+                    std::cin.getline(lastn_p_cli, 20);
+                    break;
+                case 4:
+                    std::cout<<"Nuevo Apellido Materno: ";
+                    std::cin.getline(lastn_m_cli, 20);
+                    break;
+                case 5:
+                    std::cout<<"Nueva Fecha de Nacimiento (DD/MM/AAAA): ";
+                    std::cin.getline(bday_cli, 10);
+                    break;
+                case 6:
+                    std::cout<<"Nuevo Numero de Telefono: ";
+                    std::cin.getline(phonenum_cli, 10);
+                    break;
+                case 7:
+                    std::cout<<"Nuevo Correo Electronico: ";
+                    std::cin.getline(mail_cli, 10);
+                    break;
+                case 8:
+                    std::cout<<"Modificacion Cancelada. Regresando al Menu de Clientes..."; 
+                    break;
                 default: std::cout << "Opcion invalida."<<std::endl;
             }
         }
+    wFile<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<mail_cli<<"|";
     }
+    rFile.close();
+    wFile.close();
+    std::remove("InfoClientes.txt");
+    std::rename("TempInfoClientes.txt","InfoClientes.txt");
+    if (!found) {std::cout << "Cliente con ID " << srch_id << " no encontrado."<<std::endl; Pause(); return; }
+    std::cin.ignore();
+    Pause();
 }
 
 
@@ -321,10 +356,8 @@ int main(){
     case 3:{ cli.Search(); break;}
     case 4:{ cli.Delete(); break;}
     case 5:{ cli.Mod(); break;}
-    case 6: 
-        std::cout<<"Saliendo del programa..."<<std::endl;
-    default:
-        break;
+    case 6: std::cout<<"Saliendo del programa..."<<std::endl;
+    default: std::cout<<"Opcion Invalida."; break;
     }
     } while(opc!=6);
     std::cin.ignore();
