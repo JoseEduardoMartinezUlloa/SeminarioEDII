@@ -163,7 +163,7 @@ void Cli::Delete(){
                 wFile << id_cli << "|" << firstn_cli << "|" << lastn_p_cli << "|" << lastn_m_cli << "|" << bday_cli << "|" << phonenum_cli << "|" << mail_cli << "|";    
             }
         }
-        else wFile << id_cli << "|" << firstn_cli << "|" << lastn_p_cli << "|" << lastn_m_cli << "|" << bday_cli << "|" << phonenum_cli << "|" << mail_cli << "|";
+        else if(!id_cli.empty()) wFile << id_cli << "|" << firstn_cli << "|" << lastn_p_cli << "|" << lastn_m_cli << "|" << bday_cli << "|" << phonenum_cli << "|" << mail_cli << "|";
     }
     rFile.close();
     wFile.close();
@@ -182,13 +182,14 @@ void Cli::Mod(){
     clear_screen();
     if(!rFile.good()){ std::cout<<"\n Archivo no encontrado."<<std::endl; return; } 
     std::ofstream wFile("TempInfoClientes.txt");
-    std::cout<<"\tEliminacion de Clientes\n"<<std::endl;
-    std::cout<<"ID de cliente a eliminar: ";
+    std::cout<<"\tModificacion de Clientes\n"<<std::endl;
+    std::cout<<"ID de cliente a modificar: ";
     std::cin.ignore();
     std::cin.getline(srch_id, 10);
 
     while(!rFile.eof()){
     std::string id_cli, firstn_cli, lastn_p_cli, lastn_m_cli, bday_cli, phonenum_cli, mail_cli;
+    char wid_cli[10], wfirstn_cli[25], wlastn_p_cli[20], wlastn_m_cli[20], wbday_cli[11], wphonenum_cli[11], wmail_cli[50];
         GetField(rFile,id_cli);
         GetField(rFile,firstn_cli);
         GetField(rFile,lastn_p_cli);
@@ -217,39 +218,55 @@ void Cli::Mod(){
             switch(sel){
                 case 1:
                     std::cout<<"Nuevo Codigo: ";
-                    std::cin.getline(srch_id, 10);
+                    std::cin.ignore();
+                    std::cin.getline(wid_cli, 10);
+                    id_cli=wid_cli;
                     break;
                 case 2:
                     std::cout<<"Nuevo Nombre: ";
-                    std::cin.getline(firstn_cli, 25);
+                    std::cin.ignore();
+                    std::cin.getline(wfirstn_cli, 25);
+                    firstn_cli=wfirstn_cli;
                     break;
                 case 3:
                     std::cout<<"Nuevo Apellido Paterno: ";
-                    std::cin.getline(lastn_p_cli, 20);
+                    std::cin.ignore();
+                    std::cin.getline(wlastn_p_cli, 20);
+                    lastn_p_cli=wlastn_p_cli;
                     break;
                 case 4:
                     std::cout<<"Nuevo Apellido Materno: ";
-                    std::cin.getline(lastn_m_cli, 20);
+                    std::cin.ignore();
+                    std::cin.getline(wlastn_m_cli, 20);
+                    lastn_m_cli=wlastn_m_cli;
                     break;
                 case 5:
                     std::cout<<"Nueva Fecha de Nacimiento (DD/MM/AAAA): ";
-                    std::cin.getline(bday_cli, 10);
+                    std::cin.getline(wbday_cli, 11);
+                    bday_cli=wbday_cli;
                     break;
                 case 6:
                     std::cout<<"Nuevo Numero de Telefono: ";
-                    std::cin.getline(phonenum_cli, 10);
+                    std::cin.getline(wphonenum_cli, 11);
+                    phonenum_cli=wphonenum_cli;
                     break;
                 case 7:
                     std::cout<<"Nuevo Correo Electronico: ";
-                    std::cin.getline(mail_cli, 10);
+                    std::cin.ignore();
+                    std::cin.getline(wmail_cli, 50);
+                    std::cout<<"mail anterior: "<<mail_cli<<std::endl;
+                    mail_cli=wmail_cli;
+                    std::cout<<"mail nuevo: "<<mail_cli<<std::endl;
+                    Pause();
                     break;
                 case 8:
                     std::cout<<"Modificacion Cancelada. Regresando al Menu de Clientes..."; 
                     break;
-                default: std::cout << "Opcion invalida."<<std::endl;
+                default: std::cout << "Opcion invalida."<<std::endl; break;
             }
         }
-    wFile<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<mail_cli<<"|";
+    if(!id_cli.empty()) wFile<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<"|"<<mail_cli<<"|";
+    std::cout<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<"|"<<mail_cli<<"|";
     }
     rFile.close();
     wFile.close();
@@ -356,8 +373,8 @@ int main(){
     case 3:{ cli.Search(); break;}
     case 4:{ cli.Delete(); break;}
     case 5:{ cli.Mod(); break;}
-    case 6: std::cout<<"Saliendo del programa..."<<std::endl;
-    default: std::cout<<"Opcion Invalida."; break;
+    case 6: std::cout<<"Saliendo del programa..."<<std::endl; break;
+    default: std::cout<<"Opcion Invalida.\n"<<std::endl; break;
     }
     } while(opc!=6);
     std::cin.ignore();
