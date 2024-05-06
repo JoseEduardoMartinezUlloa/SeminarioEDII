@@ -8,309 +8,289 @@
 #include "fstream"
 #include "cstring"
 
+void clear_screen(){std::cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"<<std::endl;}
 
-using namespace std;
-
+inline void Pause(){
+    std::string dummy;
+    std::cout << "Presione Entrar para continuar..." << std::endl;
+    getline(std::cin, dummy);
+}
 class Venta{
     public:
-    char folio_ven[11], id_cli[11], fecha_ven[11], tipo_ven[21];
+
+    char folio_ven[11], id_cli[11], fecha_ven[11], tipo_ven[2];
 
     void Agregar();
     void Mostrar();
     void Modificar();
     void Eliminar();
     void Buscar();
-    void Menu();
-}ven;
+};
 
-int dim_folio, dim_cli, dim_fecha, dim_tipo, opc = 0;
+
 
 void Venta::Agregar(){
+    int dim_folio, dim_cli, dim_fecha, dim_tipo = 0;
+    std::ofstream wFile("FoliosVentas.txt", std::ios::app);
 
-    cout<<"Ingrese el Folio de Venta: ";
-    cin.getline(folio_ven, 11);
-    cin.getline(folio_ven, 11);
-    cout<<"Ingrese el ID del Cliente: ";
-    cin.getline(id_cli, 11);
-    cout<<"Ingrese la Fecha de Venta (DD/MM/AAAA): ";
-    cin.getline(fecha_ven, 11);
-    cout<<"Ingrese el Tipo de Venta (Tienda/Telefono): ";
-    cin.getline(tipo_ven, 21);
+    std::cout<<"Ingrese el Folio de Venta: ";
+    std::cin.ignore();
+    std::cin.getline(folio_ven, 11);
+    std::cout<<"Ingrese el ID del Cliente: ";
+    std::cin.getline(id_cli, 11);
+    std::cout<<"Ingrese la Fecha de Venta (DD/MM/AAAA): ";
+    std::cin.getline(fecha_ven, 11);
+    std::cout<<"Ingrese el Tipo de Venta (S - Sucursal/T - Telefono): ";
+    std::cin.getline(tipo_ven, 2);
 
-    ofstream ArchivoApp("FoliosVentas.txt", ios::app);
     dim_folio = strlen(folio_ven);
     dim_cli = strlen(id_cli);
     dim_fecha = strlen(fecha_ven);
     dim_tipo = strlen(tipo_ven);
 
-    ArchivoApp.write((char*)&dim_folio,sizeof(int));
-    ArchivoApp.write((char*)&folio_ven,dim_folio);
-    ArchivoApp.write((char*)&dim_cli,sizeof(int));
-    ArchivoApp.write((char*)&id_cli,dim_cli);
-    ArchivoApp.write((char*)&dim_fecha,sizeof(int));
-    ArchivoApp.write((char*)&fecha_ven,dim_fecha);
-    ArchivoApp.write((char*)&dim_tipo,sizeof(int));
-    ArchivoApp.write((char*)&tipo_ven,dim_tipo);
+    wFile.write((char*)&dim_folio,sizeof(int));
+    wFile.write((char*)&folio_ven,dim_folio);
 
-    ArchivoApp.close();
+    wFile.write((char*)&dim_cli,sizeof(int));
+    wFile.write((char*)&id_cli,dim_cli);
 
+    wFile.write((char*)&dim_fecha,sizeof(int));
+    wFile.write((char*)&fecha_ven,dim_fecha);
+
+    wFile.write((char*)&dim_tipo,sizeof(int));
+    wFile.write((char*)&tipo_ven,dim_tipo);
+
+    wFile.close();
+    Pause();
 }
 
 void Venta::Mostrar(){
-
-    ifstream ArchivoIn("FoliosVentas.txt");
-    if(!ArchivoIn.good()){ cout<<"\nEl Archivo no existe... "; }
+    int dim_folio, dim_cli, dim_fecha, dim_tipo = 0;
+    std::ifstream rFile("FoliosVentas.txt");
+    if(!rFile.good()) std::cout<<"\nEl Archivo no existe..."<<std::endl;
     else{
-        cout<<"Folio\tID del Cliente\tFecha\tTipo de Venta\n";
-        while(!ArchivoIn.eof()){
-
-            ArchivoIn.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&folio_ven, dim_folio);
+        std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
+        while(!rFile.eof()){
+            rFile.read((char*)&dim_folio, sizeof(int));
+            rFile.read((char*)&folio_ven, dim_folio);
             folio_ven[dim_folio]='\0';
 
-            ArchivoIn.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&id_cli, dim_cli);
+            rFile.read((char*)&dim_cli, sizeof(int));
+            rFile.read((char*)&id_cli, dim_cli);
             id_cli[dim_cli]='\0';
 
-            ArchivoIn.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&fecha_ven, dim_fecha);
+            rFile.read((char*)&dim_fecha, sizeof(int));
+            rFile.read((char*)&fecha_ven, dim_fecha);
             fecha_ven[dim_fecha]='\0';
 
-            ArchivoIn.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&tipo_ven, dim_tipo);
+            rFile.read((char*)&dim_tipo, sizeof(int));
+            rFile.read((char*)&tipo_ven, dim_tipo);
             tipo_ven[dim_tipo]='\0'; 
 
-            cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<endl;
+            if(!rFile.eof()) std::cout<<folio_ven<<"\t"<<id_cli<<"\t\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
         }
     }
-    ArchivoIn.close();
+    std::cout<<std::endl;
+    rFile.close();
+    std::cin.ignore();
+    Pause();
 }
 
 void Venta::Modificar(){
-    int flag=0;
-    char folio_search[11];
+    int dim_folio, dim_cli, dim_fecha, dim_tipo = 0;
+    bool found = false;
+    char srch_folio[11];
+    char confirm;
 
-    ifstream ArchivoIn("FoliosVentas.txt");
-    if(!ArchivoIn.good()){ cout<<"\nEl Archivo no existe... "; }
+    std::ifstream rFile("FoliosVentas.txt");
+    std::fstream tempFile("TempVentas.txt", std::ios::app);
+    if(!rFile.good()) std::cout<<"\nArchivo no encontrado."<<std::endl;
     else{
-        cout<<"Ingrese el Folio de Venta a Modificar: ";
-        cin.getline(folio_search, 11);
-        cin.getline(folio_search, 11);
-        while(!ArchivoIn.eof()&&!flag){
-            ArchivoIn.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&folio_ven, dim_folio);
+        std::cout<<"Ingrese el Folio de Venta a Modificar: ";
+        std::cin.ignore();
+        std::cin.getline(srch_folio, 11);
+        while(!rFile.eof()){
+            rFile.read((char*)&dim_folio, sizeof(int));
+            rFile.read((char*)&folio_ven, dim_folio);
             folio_ven[dim_folio]='\0';
 
-            ArchivoIn.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&id_cli, dim_cli);
+            rFile.read((char*)&dim_cli, sizeof(int));
+            rFile.read((char*)&id_cli, dim_cli);
             id_cli[dim_cli]='\0';
 
-            ArchivoIn.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&fecha_ven, dim_fecha);
+            rFile.read((char*)&dim_fecha, sizeof(int));
+            rFile.read((char*)&fecha_ven, dim_fecha);
             fecha_ven[dim_fecha]='\0';
 
-            ArchivoIn.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&tipo_ven, dim_tipo);
+            rFile.read((char*)&dim_tipo, sizeof(int));
+            rFile.read((char*)&tipo_ven, dim_tipo);
             tipo_ven[dim_tipo]='\0'; 
 
-            if(strcmp(folio_search, folio_ven) == 0){ //Comparacion de campo clave con la busqueda
-                cout<<"Folio\tID del Cliente\tFecha\tTipo de Venta\n";
-                cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<endl;
-                flag=1;
-                cout<<"Desea Modificar? \t 1 - SI \t 0 - NO: ";
-                cin>>opc;
+            if(strcmp(srch_folio, folio_ven) == 0){
+                std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
+                found=true;
+                std::cout<<"Desea Modificar este folio? (Y/n): ";
+                std::cin>>confirm;
+                if(confirm=='y'||confirm=='Y'){
+                    std::cout<<"Ingrese el Folio de Venta: ";
+                    std::cin.getline(folio_ven, 11);
+                    std::cin.getline(folio_ven, 11);
+                    std::cout<<"Ingrese el ID del Cliente: ";
+                    std::cin.getline(id_cli, 11);
+                    std::cout<<"Ingrese la Fecha de Venta (DD/MM/AAAA): ";
+                    std::cin.getline(fecha_ven, 11);
+                    std::cout<<"Ingrese el Tipo de Venta (Tienda/Telefono): ";
+                    std::cin.getline(tipo_ven, 21);
+                }else std::cout<<"No confirmado. Modificacion cancelada."<<std::endl;
             }
+        if(!rFile.eof()){
+            tempFile.write((char*)&dim_folio, sizeof(int));
+            tempFile.write((char*)&folio_ven, dim_folio); 
+            tempFile.write((char*)&dim_cli, sizeof(int));
+            tempFile.write((char*)&id_cli, dim_cli);
+            tempFile.write((char*)&dim_fecha, sizeof(int));
+            tempFile.write((char*)&fecha_ven, dim_fecha);
+            tempFile.write((char*)&dim_tipo, sizeof(int));
+            tempFile.write((char*)&tipo_ven, dim_tipo);
         }
-        ArchivoIn.close();
-
-
-        if(opc==1){
-            ifstream ArchivoApp("FoliosVentas.txt");
-            ofstream ArchivoTemp("TempVentas.txt", ios::app);
-            while(!ArchivoTemp.eof()){
-            ArchivoApp.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoApp.read((char*)&folio_ven, dim_folio);
-            folio_ven[dim_folio]='\0';
-
-            ArchivoApp.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoApp.read((char*)&id_cli, dim_cli);
-            folio_ven[dim_cli]='\0';
-
-            ArchivoApp.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoApp.read((char*)&fecha_ven, dim_fecha);
-            folio_ven[dim_fecha]='\0';
-
-            ArchivoApp.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoApp.read((char*)&tipo_ven, dim_tipo);
-            folio_ven[dim_tipo]='\0'; 
-            
-
-            if(strcmp(folio_search, folio_ven) == 0){
-                cout<<"Ingrese el Folio de Venta: ";
-                cin.getline(folio_ven, 11);
-                cin.getline(folio_ven, 11);
-                cout<<"Ingrese el ID del Cliente: ";
-                cin.getline(id_cli, 11);
-                cout<<"Ingrese la Fecha de Venta (DD/MM/AAAA): ";
-                cin.getline(fecha_ven, 11);
-                cout<<"Ingrese el Tipo de Venta (Tienda/Telefono): ";
-                cin.getline(tipo_ven, 21);
-
-                dim_folio = strlen(folio_ven);
-                dim_cli = strlen(id_cli);
-                dim_fecha = strlen(fecha_ven);
-                dim_tipo = strlen(tipo_ven);
-            }
-
-            ArchivoTemp.write((char*)&dim_folio, sizeof(int));
-            ArchivoTemp.write((char*)&folio_ven, dim_folio);
-            ArchivoTemp.write((char*)&dim_cli, sizeof(int));
-            ArchivoTemp.write((char*)&id_cli, dim_cli);
-            ArchivoTemp.write((char*)&dim_fecha, sizeof(int));
-            ArchivoTemp.write((char*)&fecha_ven, dim_fecha);
-            ArchivoTemp.write((char*)&dim_tipo, sizeof(int));
-            ArchivoTemp.write((char*)&tipo_ven, dim_tipo);
-            }
-        ArchivoTemp.close();
-        ArchivoApp.close();
-        remove("FoliosVentas.txt");
-        rename("TempVentas.txt", "FoliosVentas.txt");
         }
+        if (!found) std::cout << "Folio no encontrado." << std::endl;
     }
+    tempFile.close();
+    rFile.close();
+    remove("FoliosVentas.txt");
+    rename("TempVentas.txt", "FoliosVentas.txt");
+    Pause();
 }
 
 void Venta::Eliminar(){
-    int flag=0;
-    char folio_search[11];
+    int dim_folio, dim_cli, dim_fecha, dim_tipo = 0;
+    bool found = false;
+    bool passable = true;
+    char srch_folio[11];
+    char confirm;
 
-    ifstream ArchivoIn("FoliosVentas.txt");
-    if(!ArchivoIn.good()){cout<<"El Archivo No Fue Encontrado.";}
+    std::ifstream rfile("foliosVentas.txt");
+    std::ofstream tempfile("tempVentas.txt", std::ios::app);
+    if(!rfile.good()) std::cout<<"El archivo no fue encontrado.";
     else{
-        cout<<"Ingrese El Folio A Eliminar: ";
-        cin.getline(folio_search, 11);
-        cin.getline(folio_search, 11);
-        while(!ArchivoIn.eof()&&!flag){
-            ArchivoIn.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&folio_ven, dim_folio);
+        std::cout<<"Ingrese el folio a eliminar: ";
+        std::cin.ignore();
+        std::cin.getline(srch_folio, 11);
+        while(!rfile.eof()){
+            rfile.read((char*)&dim_folio, sizeof(int));
+            rfile.read((char*)&folio_ven, dim_folio);
             folio_ven[dim_folio]='\0';
 
-            ArchivoIn.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&id_cli, dim_cli);
+            rfile.read((char*)&dim_cli, sizeof(int));
+            rfile.read((char*)&id_cli, dim_cli);
             id_cli[dim_cli]='\0';
 
-            ArchivoIn.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&fecha_ven, dim_fecha);
+            rfile.read((char*)&dim_fecha, sizeof(int));
+            rfile.read((char*)&fecha_ven, dim_fecha);
             fecha_ven[dim_fecha]='\0';
 
-            ArchivoIn.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&tipo_ven, dim_tipo);
+            rfile.read((char*)&dim_tipo, sizeof(int));
+            rfile.read((char*)&tipo_ven, dim_tipo);
             tipo_ven[dim_tipo]='\0'; 
 
-            if(strcmp(folio_search, folio_ven) == 0){ //Comparacion de campo clave con la busqueda
-                cout<<"Folio\tID del Cliente\tFecha\tTipo de Venta\n";
-                cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<endl;
-                flag=1;
-                cout<<"Desea Eliminar? \t 1 - SI \t 0 - NO: ";
-                cin>>opc;
+            if(strcmp(srch_folio, folio_ven) == 0){
+                found = true;
+                std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
+                found=true;
+                std::cout<<"Desea eliminar este folio? (Y/n): ";
+                std::cin>>confirm;
+                if(confirm=='y'||confirm=='Y') passable = false;
+                else std::cout<<"No confirmado. Eliminacion cancelada.";
             }
-        }
-        ArchivoIn.close();
-
-        if(opc==1){
-            ifstream ArchivoIn("FoliosVentas.txt");
-            ofstream ArchivoTemp("TempVentas.txt", ios::app);
-            while(!ArchivoIn.eof()){
-
-            ArchivoIn.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&folio_ven, dim_folio);
-            folio_ven[dim_folio]='\0';
-
-            ArchivoIn.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&id_cli, dim_cli);
-            id_cli[dim_cli]='\0';
-
-            ArchivoIn.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&fecha_ven, dim_fecha);
-            fecha_ven[dim_fecha]='\0';
-
-            ArchivoIn.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&tipo_ven, dim_tipo);
-            tipo_ven[dim_tipo]='\0';  
-
-            if(strcmp(folio_search, folio_ven)!=0){
-            ArchivoTemp.write((char*)&dim_folio,sizeof(int));
-            ArchivoTemp.write((char*)&dim_folio, sizeof(int));
-            ArchivoTemp.write((char*)&folio_ven, dim_folio);
-            ArchivoTemp.write((char*)&dim_cli, sizeof(int));
-            ArchivoTemp.write((char*)&id_cli, dim_cli);
-            ArchivoTemp.write((char*)&dim_fecha, sizeof(int));
-            ArchivoTemp.write((char*)&fecha_ven, dim_fecha);
-            ArchivoTemp.write((char*)&dim_tipo, sizeof(int));
-            ArchivoTemp.write((char*)&tipo_ven, dim_tipo);
-            }
-
-            }
-        ArchivoTemp.close();
-
-        ArchivoIn.close();
-        remove("FoliosVentas.txt");
-        rename("TempVentas.txt", "FoliosVentas.txt");
+        if(passable==true&&!rfile.eof()){
+            tempfile.write((char*)&dim_folio, sizeof(int));
+            tempfile.write((char*)&folio_ven, dim_folio); 
+            tempfile.write((char*)&dim_cli, sizeof(int));
+            tempfile.write((char*)&id_cli, dim_cli);
+            tempfile.write((char*)&dim_fecha, sizeof(int));
+            tempfile.write((char*)&fecha_ven, dim_fecha);
+            tempfile.write((char*)&dim_tipo, sizeof(int));
+            tempfile.write((char*)&tipo_ven, dim_tipo);
+        }    
+        passable=true;
         }
     }
+    tempfile.close();
+    rfile.close();
+    remove("foliosVentas.txt");
+    rename("TempVentas.txt", "FoliosVentas.txt");
+    std::cin.ignore();
+    Pause();
 }
 
-void Venta::Buscar(){
-    char folio_search[11];
-    int flag = 0;
-    system("cls");
 
-    ifstream ArchivoIn("FoliosVentas.txt");
-    if(!ArchivoIn.good()){ cout<<"\nArchivo No Encontrado."; }
+void Venta::Buscar(){
+    int dim_folio, dim_cli, dim_fecha, dim_tipo = 0;
+    char srch_folio[11];
+    bool found = false;
+
+    std::ifstream rFile("FoliosVentas.txt");
+    if(!rFile.good()){ std::cout<<"\nArchivo No Encontrado."; }
     else{
-        cout<<"Ingrese el Folio de Venta a Buscar: ";
-        cin.getline(folio_search, 10);
-        cin.getline(folio_search, 10);
-        while(!ArchivoIn.eof()&&!flag){
-            ArchivoIn.read((char*)&dim_folio, sizeof(int)); //dim folio contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&folio_ven, dim_folio);
+        std::cout<<"Ingrese el folio a buscar: ";
+        std::cin.ignore();
+        std::cin.getline(srch_folio, 11);
+        while(!rFile.eof()){
+            rFile.read((char*)&dim_folio, sizeof(int));
+            rFile.read((char*)&folio_ven, dim_folio);
             folio_ven[dim_folio]='\0';
 
-            ArchivoIn.read((char*)&dim_cli, sizeof(int)); //dim cli contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&id_cli, dim_cli);
+            rFile.read((char*)&dim_cli, sizeof(int));
+            rFile.read((char*)&id_cli, dim_cli);
             id_cli[dim_cli]='\0';
 
-            ArchivoIn.read((char*)&dim_fecha, sizeof(int)); //dim fecha contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&fecha_ven, dim_fecha);
+            rFile.read((char*)&dim_fecha, sizeof(int));
+            rFile.read((char*)&fecha_ven, dim_fecha);
             fecha_ven[dim_fecha]='\0';
 
-            ArchivoIn.read((char*)&dim_tipo, sizeof(int)); //dim tipo contiene el tamaño de la cadena a leer
-            ArchivoIn.read((char*)&tipo_ven, dim_tipo);
-            tipo_ven[dim_tipo]='\0';
-            if(strcmp(folio_search, folio_ven) == 0){ //Comparacion de campo clave con la busqueda
-                cout<<"Folio\tID del Cliente\tFecha\tTipo de Venta\n";
-                cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<endl;
-                flag=1;
+            rFile.read((char*)&dim_tipo, sizeof(int));
+            rFile.read((char*)&tipo_ven, dim_tipo);
+            tipo_ven[dim_tipo]='\0'; 
+
+            if(strcmp(srch_folio, folio_ven) == 0){
+                found = true;
+                std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
             }
         }
-        if(!flag) cout<<"\nFolio No Encontrado.";
+        if(!found) std::cout<<"\nFolio No Encontrado."<<std::endl;
     }
-    ArchivoIn.close();    
-        }
+    rFile.close();    
+    Pause();
+}
 
 int main(){
-    system("cls");
-    cout<<"\n\t\tFolios de Venta\n\n";
+    Venta ven;
+    int sel=0;
+    
     do{
-        cout<<"\t1. Agregar\n\t2. Mostrar\n\t3. Buscar\n\t4. Modificar\n\t5. Eliminar\n";
-        cin>>opc;
-        switch(opc){
-            case 1:{ven.Agregar();break;};
-            case 2:{ven.Mostrar();break;};
-            case 3:{ven.Buscar();break;};
-            case 4:{ven.Modificar();break;};
-            case 5:{ven.Eliminar();break;};
-            case 0:{system("pause");break;};
+        clear_screen();
+        std::cout<<"\tFolios de Venta"<<std::endl<<std::endl;
+        std::cout<<"1 - Registrar un cliente"<<std::endl;
+        std::cout<<"2 - Mostrar los clientes registrados"<<std::endl;
+        std::cout<<"3 - Buscar un cliente"<<std::endl;
+        std::cout<<"4 - Modificar datos de un cliente"<<std::endl;
+        std::cout<<"5 - Eliminar un cliente"<<std::endl;
+        std::cout<<"6 - Salir del programa"<<std::endl;
+        std::cout<<"Su seleccion: ";
+        std::cin.clear();
+        std::cin>>sel;
+        switch(sel){
+            case 1:{ven.Agregar(); break;};
+            case 2:{ven.Mostrar(); break;};
+            case 3:{ven.Buscar(); break;};
+            case 4:{ven.Modificar(); break;};
+            case 5:{ven.Eliminar(); break;};
+            case 6:{Pause(); break;};
         }
-    }while(opc!=0);
-    return 0;
+    }while(sel!=6);
+    return 0;
 }

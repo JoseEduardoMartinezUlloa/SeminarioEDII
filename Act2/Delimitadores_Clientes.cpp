@@ -242,11 +242,13 @@ void Cli::Mod(){
                     break;
                 case 5:
                     std::cout<<"Nueva Fecha de Nacimiento (DD/MM/AAAA): ";
+                    std::cin.ignore();
                     std::cin.getline(wbday_cli, 11);
                     bday_cli=wbday_cli;
                     break;
                 case 6:
                     std::cout<<"Nuevo Numero de Telefono: ";
+                    std::cin.ignore();
                     std::cin.getline(wphonenum_cli, 11);
                     phonenum_cli=wphonenum_cli;
                     break;
@@ -254,9 +256,7 @@ void Cli::Mod(){
                     std::cout<<"Nuevo Correo Electronico: ";
                     std::cin.ignore();
                     std::cin.getline(wmail_cli, 50);
-                    std::cout<<"mail anterior: "<<mail_cli<<std::endl;
                     mail_cli=wmail_cli;
-                    std::cout<<"mail nuevo: "<<mail_cli<<std::endl;
                     Pause();
                     break;
                 case 8:
@@ -266,7 +266,6 @@ void Cli::Mod(){
             }
         }
     if(!id_cli.empty()) wFile<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<"|"<<mail_cli<<"|";
-    std::cout<<id_cli<<"|"<<firstn_cli<<"|"<<lastn_p_cli<<"|"<<lastn_m_cli<<"|"<<bday_cli<<"|"<<phonenum_cli<<"|"<<mail_cli<<"|";
     }
     rFile.close();
     wFile.close();
@@ -276,82 +275,6 @@ void Cli::Mod(){
     std::cin.ignore();
     Pause();
 }
-
-
-//             if(strcmp(id_cli,id_cli_mod)==0 && !b)
-//             {
-//                 cout<<endl<<"\nCodigo del Cliente: "<<id_cli<<endl<<"\nNombre Completo: "<<nombre_cli<<" "<<apellido_pat_cli<<" "<<apellido_mat_cli<<"\nFecha de Nacimiento:"<<fecha_nac_cli<<"\nNumero de Telefono: "<<num_tel_cli<<"\nCorreo Electronico: "<<mail_cli<<"\n";
-
-//                 cout <<"\n Seleccione el Dato a Modificar:\n";
-//                 cout <<"\n 1) Modificar Codigo: ";
-//                 cout <<"\n 2) Modificar Nombre: ";
-//                 cout <<"\n 3) Modificar Apellido Paterno: ";
-//                 cout <<"\n 4) Modificar Apellido Materno: ";
-//                 cout <<"\n 5) Modificar Fecha de Nacimiento: ";
-//                 cout <<"\n 6) Modificar Numero de Telefono: ";
-//                 cout <<"\n 7) Modificar Correo Electronico: ";
-//                 cout <<"\n 8) Regresar: ";
-
-//                 cout<<"\n   Elige la opcion a realizar: ";
-//                 cin>>opcion;
-
-
-//                 switch(opcion) ///switch para realizar las modificaciones
-//                 {
-//                     case 1: //nuevo id_cli
-//                         cout<<"\n Ingrese el Nuevo Codigo del Cliente: ";
-//                         cin.getline(id_cli,10);
-//                         cin.getline(id_cli,10);
-//                         break;
-//                     case 2://nuevo nombre_cli
-//                         cout<<"\n Ingrese el Nuevo Nombre del Cliente: ";
-//                         cin.getline(nombre_cli,35);
-//                         cin.getline(nombre_cli,35);
-//                         break;
-//                     case 3: //nuevo apellido_pat_cli
-//                         cout<<"\n Ingrese el Nuevo Apellido Paterno del Cliente: ";
-//                         cin.getline(apellido_pat_cli,15);
-//                         cin.getline(apellido_pat_cli,15);
-//                         break;
-//                     case 4: //nuevo apellido_mat_cli
-//                         cout<<"\n Ingrese el Nuevo Apellido Paterno del Cliente: ";
-//                         cin.getline(apellido_mat_cli,15);
-//                         cin.getline(apellido_mat_cli,15);
-//                         break;
-//                     case 5: //nuevo fecha_nac_cli
-//                         cout<<"\n Ingrese el Nuevo Apellido Paterno del Cliente: ";
-//                         cin.getline(fecha_nac_cli,15);
-//                         cin.getline(fecha_nac_cli,15);
-//                         break;
-//                     case 6: //nuevo num_tel_cli
-//                         cout<<"\n Ingrese el Nuevo Apellido Paterno del Cliente: ";
-//                         cin.getline(num_tel_cli,15);
-//                         cin.getline(num_tel_cli,15);
-//                         break;
-//                     case 7: //nuevo mail_cli
-//                         cout<<"\n Ingrese el Nuevo Apellido Paterno del Cliente: ";
-//                         cin.getline(mail_cli,15);
-//                         cin.getline(mail_cli,15);
-//                         break;
-                    
-//                     default: cout<<"\n Opcion Invalida.";
-//                 }
-
-//                 if(opcion!=8 && opcion>0 && opcion<9)
-//                     b = true;
-//             }
-//             LecturaTemporal<<id_cli<<"|"<<nombre_cli<<"|"<<apellido_pat_cli<<"|"<<apellido_mat_cli<<"|"<<fecha_nac_cli<<"|"<<num_tel_cli<<mail_cli<<"|";
-//         }
-//         Lectura.close();
-//         LecturaTemporal.close();
-//         if(!b)
-//             cout<<"\n No existe el archivo.";
-
-//         remove("InfoClientes.txt");
-//         rename("TempClientes.txt","InfoClientes.txt");
-//     }
-// }
-// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx //
 
 int main(){
     int opc;
