@@ -1,9 +1,10 @@
-
+#ifndef USRHISTORY_H
+#define USRHISTORY_H
 class UsrHistory{
     public:
     char username[20], activity[20], act_time[24];
     void Add();
-    void Mod();
+    void Modify();
     void Show();
     void Delete();
     void Search();
@@ -11,3 +12,5 @@ class UsrHistory{
     void Read();
     void Decompress();
 };
+
+#endif

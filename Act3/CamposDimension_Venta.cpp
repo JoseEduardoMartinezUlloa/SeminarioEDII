@@ -128,7 +128,7 @@ void Venta::Modificar(){
 
             if(strcmp(srch_folio, folio_ven) == 0){
                 std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
-                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
                 found=true;
                 std::cout<<"Desea Modificar este folio? (Y/n): ";
                 std::cin>>confirm;
@@ -198,7 +198,7 @@ void Venta::Eliminar(){
             if(strcmp(srch_folio, folio_ven) == 0){
                 found = true;
                 std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
-                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
                 found=true;
                 std::cout<<"Desea eliminar este folio? (Y/n): ";
                 std::cin>>confirm;
@@ -258,7 +258,7 @@ void Venta::Buscar(){
             if(strcmp(srch_folio, folio_ven) == 0){
                 found = true;
                 std::cout<<"Folio\tID del Cliente\tFecha\t\tTipo de Venta"<<std::endl;
-                std::cout<<folio_ven<<"\t"<<id_cli<<"\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
+                std::cout<<folio_ven<<"\t"<<id_cli<<"\t\t"<<fecha_ven<<"\t"<<tipo_ven<<std::endl;
             }
         }
         if(!found) std::cout<<"\nFolio No Encontrado."<<std::endl;
